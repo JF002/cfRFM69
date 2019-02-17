@@ -1,0 +1,19 @@
+{
+  "name": "cfRFM69",
+  "description": "Driver for RFM69 RF transceiver",
+  "keywords": "RFM69 RF 868 433 transceiver",
+  "authors":
+  {
+    "name": "Jean-François Milants",
+    "email": "jf@codingfield.com",
+    "url": "https://codingfield.com"
+  },
+  "repository":
+  {
+    "type": "git",
+    "url": ""
+  },
+  "version": "0.1.0",
+  "license": "MIT",
+  "frameworks": "Arduino"
+}

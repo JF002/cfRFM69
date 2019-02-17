@@ -32,3 +32,7 @@
 *.out
 *.app
 
+.idea
+.pioenvs
+cmake-build-*
+CMakeListsPrivate.txt
