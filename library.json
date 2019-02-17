@@ -11,9 +11,9 @@
   "repository":
   {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/JF002/cfRFM69.git"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "frameworks": "Arduino"
 }
