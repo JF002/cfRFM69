@@ -39,7 +39,12 @@ void setup() {
 }  
 
 ```
-See examples for more code!
+
+## Examples
+The project contains a simple basic TX example (the only use-case I've tested for now). I'll try to do more projects
+when I have the time :)
+
+See also [my doorbell project](https://github.com/JF002/RFM69_Doorbell) for a full real-world example.
 
 ## Links
 * [RFM69_Doorbell](https://github.com/JF002/RFM69_Doorbell), my project at the origin of this library

@@ -7,9 +7,6 @@
 using namespace Codingfield::Communication;
 
 SPIClass spi(HSPI); // Use either HSPI or VSPI
-constexpr uint32_t deviceId = 0x44BDF020; // Use any 32 bits ID you like
-constexpr uint8_t nbRepeat = 50; // 50 repeats in the original frame
-HoneywellDoorbeelFrameBuilder frameBuilder{deviceId, nbRepeat};
 
 std::unique_ptr<Codingfield::Communication::RFM69> radio;
 std::vector<uint8_t> currentFrame;
@@ -18,6 +15,9 @@ bool packetReceived = false;
 uint8_t currentByte;
 portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 int32_t interruptCounter = 0;
+bool endOfFrame= false;
+uint8_t nbByteSent = 0;
+const uint8_t nbBytesToSend = 128;
 
 void IRAM_ATTR handleInterrupt() {
   portENTER_CRITICAL_ISR(&mux);
@@ -30,7 +30,6 @@ void setup() {
   Serial.begin(115200);
   Serial.flush();
   Serial.println("Hello");
-  currentFrame.reserve(64);
 
   Serial.println("Resetting the RFM69..");
   pinMode(4, OUTPUT);
@@ -90,7 +89,6 @@ void setup() {
   }
 }
 
-bool endOfFrame= false;
 void loop() {
   if(radio) {
     switch (state) {
@@ -98,10 +96,8 @@ void loop() {
         Serial.print("Sending data frame...");
         // Write 64 first bytes to the fifo
         for(uint8_t i = 0; i < 64; i++) {
-          if(frameBuilder.GetNextByte(currentByte))
-            currentFrame.push_back(currentByte);
-          else
-            break;
+          currentFrame.push_back(i);
+          nbByteSent++;
         }
         radio->TransmitPacket(currentFrame);
         currentFrame.clear();
@@ -115,14 +111,12 @@ void loop() {
         if(!endOfFrame) {
           if(radio->IsIrqFlagSet(RFM69::IrqFlags2::FifoLevel) == false) {
             for(uint8_t i = 0; i < 32; i++) {
-              if(frameBuilder.GetNextByte(currentByte)) {
-                currentFrame.push_back(currentByte);
-              }
-              else {
-                endOfFrame = true;
-                break;
-              }
+              currentFrame.push_back(currentByte);
+              nbByteSent++;
             }
+            if(nbByteSent >= nbBytesToSend)
+              endOfFrame = true;
+
             radio->TransmitPacket(currentFrame);
             currentFrame.clear();
           }
