@@ -61,7 +61,7 @@ bool RFM69::IsBitSet(uint8_t value, uint8_t bit) {
 
 void RFM69::SetOperatingMode(RFM69::Modes mode) {
   uint8_t currentRegisterValue = ReadRegister(Registers::OperatingMode);
-  currentRegisterValue &= 0x1C;
+  currentRegisterValue &= ~0x1C;
   WriteRegister(Registers::OperatingMode, currentRegisterValue | static_cast<uint8_t>( mode));
 
   bool ready = false;
@@ -100,7 +100,7 @@ void RFM69::SetFrequency(uint32_t freq) {
 
 void RFM69::ReadMaskWriteRegister(Registers reg, uint8_t mask, uint8_t value) {
   auto regValue = ReadRegister(static_cast<uint8_t>(reg));
-  regValue &= static_cast<uint8_t>(mask);
+  regValue &= ~static_cast<uint8_t>(mask);
   regValue |= static_cast<uint8_t>(value);
   WriteRegister(static_cast<uint8_t>(reg), regValue);
 }
@@ -313,19 +313,19 @@ void RFM69::SetOcp(bool enabled) {
 
 void RFM69::AbortListen() {
   uint8_t currentRegisterValue = ReadRegister(Registers::OperatingMode);
-  currentRegisterValue &= 0x60;
+  currentRegisterValue &= ~0x60;
   WriteRegister(Registers::OperatingMode, static_cast<uint8_t>(currentRegisterValue | 0x20));
 }
 
 void RFM69::EnableListen() {
   uint8_t currentRegisterValue = ReadRegister(Registers::OperatingMode);
-  currentRegisterValue &= 0x60;
+  currentRegisterValue &= ~0x60;
   WriteRegister(Registers::OperatingMode, static_cast<uint8_t>(currentRegisterValue | 0x40));
 }
 
 void RFM69::EnableSequencer(bool enable) {
   uint8_t registerValue = ReadRegister(Registers::OperatingMode);
-  registerValue &= 0x80;
+  registerValue &= ~0x80;
   if(!enable)
     registerValue |= 0x80;
   WriteRegister(Registers::OperatingMode, static_cast<uint8_t>(registerValue));
